@@ -1,4 +1,4 @@
-LaunChair: A Pure-Python Parallel Job Launcher
+LaunChair: A Barebones Pure-Python Parallel Job Launcher
 ---------------------------------------------
 Eric T Dawson  
 October 2014
