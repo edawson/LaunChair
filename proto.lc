@@ -1,0 +1,50 @@
+task: align
+    cmd: bwa
+    params: mem -t $threads -r $ref -b
+    inputs: $input.gz $input.gz
+    outputs: $output.bam
+
+task: sort
+    cmd: bwa
+    params: sort
+    inputs: $input.bam
+    outputs: $output.bam
+
+pipeline: align_and_sort
+    do: align -> sort
+    log: true
+
+mission: cancer_align_sort
+    work: align_and_sort
+    data: /home/eric/sandbox/test_data
+    mapping: test_data_mapping.txt
+    cores: 4
+    cores_per_task: 2
+
+## Could also be specified
+mission: cancer_align_sort
+    work: align -> sort
+    data:
+    mapping:
+    cores: 4
+    cores_per_task: 2
+
+## Output logfiles as:
+## lc_<mission>_<DATESTAMP>_<TIMESTAMP>.log
+## restart using restart files
+## which are a dictionary of booleans for started, finished
+## for each set of inputs in the data and each stage of work
+align:
+    data1 data2:
+        start: T
+        finish: T
+    data3 data4:
+        start: T
+        finish: F
+    data5 data6:
+        start: F
+        finish F
+sort:
+    data_a:
+        start: F
+        finish: F

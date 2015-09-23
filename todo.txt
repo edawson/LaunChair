@@ -1,0 +1,5 @@
+1. Implement jobfile writing
+    --directories as input (data sweep)
+    --single file as input (param sweep)
+2. Pipelining/chaining and restarting.
+3. Logging
