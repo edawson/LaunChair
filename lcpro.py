@@ -2,6 +2,9 @@ import multiprocessing
 import sys
 import argparse
 
+## TODO pipelines and tasks should interchangeable
+## in missions.
+
 ## A mission is a dataset and a
 ## collection of Tasks (or a pipeline)
 ## to run on that data. It's a "Job" in
@@ -14,14 +17,34 @@ class Mission:
         self.tasks = {}
         self.name = None
 
+    def parse_data_file(data_file):
+        data_list = []
+        with open(data_file, "r") as fi:
+            for line in fi:
+                if len(line.split("\t")) == 1:
+                    data_list.append(line.strip())
+                else:
+                    data_list.append([x for x in line.strip().split("\t")])
+        return data_list
+
+    ## Iterates over tasks / pipelines, respecting the ordering requirements of each.
+    ## Iterates over DATA, applying command-line substitution for
+    ## input variables. Passes outputs to next Task if needed.
+    ## Kicks off logging and restart marking as well.
+    def run(self):
+        
+
+        return
+
 ## A pipeline is a collection of Tasks
 ## linked together by intermediate inputs/outputs
 class Pipeline:
     def __init__(self):
-        self.tasks = []
+        self.tasks = {}
 
-    def add_task(task):
-        return
+    def add_task(self, task):
+        self.tasks[task.name] = task
+
     def run():
         return
 
@@ -131,7 +154,12 @@ def parse_lc_file(lc_file, debug=False):
                 if debug:
                     print t
             elif x.startswith("pipeline"):
-                pass
+                p = Pipeline(str((x.split(":")[1]).strip()))
+                x = fi.readline()
+                while not x.startswith("\n"):
+                    if x.strip().startswith("do"):
+                        do_line = (do_line.split(":")[1]).strip()
+                        
             elif x.startswith("mission"):
                 pass
             elif x.strip().startswith("end"):
@@ -145,15 +173,7 @@ def parse_lc_file(lc_file, debug=False):
                 #raise Exception("Invalid input in lcfile. Please see the specs.")
     return
 
-def parse_data_file(data_file):
-    data_list = []
-    with open(data_file, "r") as fi:
-        for line in fi:
-            if len(line.split("\t")) == 1:
-                data_list.append(line.strip())
-            else:
-                data_list.append([x for x in line.strip().split("\t")])
-    return data_list
+
 
 
 if __name__ == "__main__":

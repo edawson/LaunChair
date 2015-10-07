@@ -1,7 +1,23 @@
+## Octothorpes are for comment lines ;)
+## A task is a single computational operation (i.e. one command)
+## It takes inputs as $input<N> variables in the params line.
+## These are then regex-replaced by the corresponding split in
+## in either the datafile or the preceding Task's output.
+## Outputs can be specified with $output.<ext> in the param line
+## if the Task requires an output name. If specified in the
+## "outputs" line, the STDOUT of the cmd will be piped to $<output>.<ext>
+## Piping is not yet implemented, but the future default will be
+## false
+    # Should probably add a vars line to make things easier and
+    # prevent having to specify them in the datafile
+    #vars: threads=4; ref=/home/eric/sandbox/ref
+    #params: mem -t $threads -r $ref -b $input1.gz $input2.gz
+
 task: align
     cmd: bwa
-    params: mem -t $threads -r $ref -b $input1.gz $input2.gz
+    params: mem -t 4 -r ref.fa -b $input1.gz $input2.gz
     outputs: $output.bam
+    pipe = false
 
 task: sort
     cmd: bwa
@@ -9,14 +25,26 @@ task: sort
     inputs: $input.bam
     outputs: $output.bam
 
+## A pipeline specifies how a series of tasks are wired
+## together. The "->" operator indicates the file output(s) of
+## one task are the input file(s) of another. The "|" operator
+## indicates the STDOUT of one command is to go to the STDIN
+## of the next one, however this feature is not yet implemented.
+## A ";" indicates the commands do not rely on each other for
+## input/output but are still dependent.
 pipeline: align_and_sort
     do: align -> sort
     log: true
 
+
+## A mission specifies the pipeline or task to be run across 
+## the inputs in the data. It also specifies a number of cores
+## per task, defaulting to serial (1 core) if core_per_task
+## is not defined. The cores variable allows one to specify how
+## many cores are available on the system.
 mission: cancer_align_sort
     work: align_and_sort
     data: /home/eric/sandbox/test_data
-    mapping: test_data_mapping.txt
     cores: 4
     cores_per_task: 2
 
@@ -24,7 +52,6 @@ mission: cancer_align_sort
 mission: cancer_align_sort
     work: align -> sort
     data:
-    mapping:
     cores: 4
     cores_per_task: 2
 
