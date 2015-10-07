@@ -35,22 +35,30 @@ class Task:
         self.inputs = None
         self.outputs = None
 
-    def get_outputs():
-        return
+    def get_outputs(self):
+        return outputs
     def set_name(self, n):
         self.name = n
+
     def set_cmd(self, c):
         self.cmd = c
+
     def set_params(self, p):
         self.params = p
+
     def set_inputs(self, i):
-        return
+        self.inputs = i
+
     def set_outputs(self, o):
-        return
+        self.outputs = o
+
     def get_name(self):
         return self.name
+
     def __repr__(self):
-        return "Name: " + self.name + "\n" 
+        return "Task: " + self.name + "\n" \
+        + "\tCommand: " + self.cmd  + "\n" \
+        + "\tParams: " + self.params
         #"Params: " + self.params
 
 
@@ -101,31 +109,40 @@ def parse_lc_file(lc_file, debug=False):
     d["missions"] = {}
 
     with open(lc_file, "r") as fi:
-        x = fi.readline()
+        
         #for line in fi:
-        #while x:
-        if x.startswith("task"):
-            ## create a new named task
-            t = Task(str((x.split(":")[1]).strip()))
-            #x = fi.readline()
-            while not x.startswith("\n"):
-                if x.startswith("cmd"):
-                    t.set_cmd( x.split(":")[1].strip() )
-                elif x.startswith("params"):
-                    t.set_params( x.split(":")[1].strip() )
-                elif x.startswith("inputs"):
-                    t.inputs = x.split(":")[1].strip()
-                elif x.startswith("outputs"):
-                    t.outputs = x.split(":")[1].strip()
+        while True:
+            x = fi.readline()
+            if x.startswith("task"):
+                ## create a new named task
+                t = Task(str((x.split(":")[1]).strip()))
                 x = fi.readline()
-            d["tasks"][t.name] = t
-            if debug:
-                print t.cmd
-        elif x.startswith("pipeline"):
-            pass
-        elif x.startswith("mission"):
-            pass
-        #x = fi.readline()
+                while not x.startswith("\n"):
+                    if x.strip().startswith("cmd"):
+                        t.set_cmd( x.split(":")[1].strip() )
+                    elif x.strip().startswith("params"):
+                        t.set_params( x.split(":")[1].strip() )
+                    elif x.strip().startswith("inputs"):
+                        t.inputs = x.split(":")[1].strip()
+                    elif x.strip().startswith("outputs"):
+                        t.outputs = x.split(":")[1].strip()
+                    x = fi.readline()
+                d["tasks"][t.name] = t
+                if debug:
+                    print t
+            elif x.startswith("pipeline"):
+                pass
+            elif x.startswith("mission"):
+                pass
+            elif x.strip().startswith("end"):
+                break
+            elif x.strip().startswith("#"):
+                continue
+            else:
+                if debug:
+                    print "Warning: invalid input."
+                continue
+                #raise Exception("Invalid input in lcfile. Please see the specs.")
     return
 
 def parse_data_file(data_file):

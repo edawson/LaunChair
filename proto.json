@@ -1,6 +1,8 @@
+---
 task: align
     cmd: bwa
-    params: mem -t $threads -r $ref -b $input1.gz $input2.gz
+    params: mem -t $threads -r $ref -b
+    inputs: $input.gz $input.gz
     outputs: $output.bam
 
 task: sort
@@ -47,5 +49,3 @@ sort:
     data_a:
         start: F
         finish: F
-
-end

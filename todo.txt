@@ -3,3 +3,7 @@
     --single file as input (param sweep)
 2. Pipelining/chaining and restarting.
 3. Logging
+
+4. Implement input / output replacement using intermediate files
+and regex replacement
+    - assign an input key
