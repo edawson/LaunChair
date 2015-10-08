@@ -22,6 +22,14 @@ LaunChair is developed and maintained on Linux but should work on Mac OS X
 out of the box. While nothing in LaunChair prevents it from working on Windows,
 it has not been tested on the platform.
 
+## Current Status  
+LaunChair is stable and compatible with Python 2.4-2.7. A new method, lcpro,
+is under active development on the dev branch. lcpro provides a pipeline-based
+wrapper for LaunChair that prevents users from having to write so many BASH loops
+and instead relies on a series of config files. These files are in a YAML-like format.
+In the future, lcpro will support full pipelining of Tasks, input/output handling, logging,
+restarting jobs, and more advanced parallel environment configuration. Stay tuned.
+
 ## What LaunChair is:
 1. A simple framework for running shell commands in parallel.
 2. A pure-Python module with no dependencies.
