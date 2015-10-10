@@ -32,21 +32,25 @@ class Mission:
     ## input variables. Passes outputs to next Task if needed.
     ## Kicks off logging and restart marking as well.
     def run(self):
-        
-
         return
 
 ## A pipeline is a collection of Tasks
 ## linked together by intermediate inputs/outputs
 class Pipeline:
-    def __init__(self):
+    def __init__(self, n):
         self.tasks = {}
+        self.name = n
+        self.do_line = None
+        self.log = True
 
     def add_task(self, task):
         self.tasks[task.name] = task
 
     def run():
         return
+
+    def __repr__(self):
+        return "Pipeline: " + self.name + "\n"
 
 ## A task is a single command (and its parameters)
 ## performed on a single data object.
@@ -158,10 +162,16 @@ def parse_lc_file(lc_file, debug=False):
                 x = fi.readline()
                 while not x.startswith("\n"):
                     if x.strip().startswith("do"):
-                        do_line = (do_line.split(":")[1]).strip()
-                        
+                        p.do_line = (x.strip().split(":")[1]).strip()
+                    elif x.strip().startswith("log"):
+                        do_log = (x.strip().split(":")[1]).lower()
+                        p.log = True if "true" in do_log else False
+                    x = fi.readline()
+                d["pipelines"][p.name] = p
+                if debug:
+                    print p
             elif x.startswith("mission"):
-                pass
+                continue
             elif x.strip().startswith("end"):
                 break
             elif x.strip().startswith("#"):
