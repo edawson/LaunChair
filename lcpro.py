@@ -13,7 +13,7 @@ class Mission:
     def __init__(self, total_cores=None):
         self.system_cores = total_cores if total_cores is not None else mp.cpu_count()
         self.data_file = None
-        self.Pipelines = {}
+        self.pipelines = {}
         self.tasks = {}
         self.name = None
 
@@ -22,9 +22,9 @@ class Mission:
         with open(data_file, "r") as fi:
             for line in fi:
                 if len(line.split("\t")) == 1:
-                    data_list.append(line.strip())
+                    data_list.append(tuple(line.strip()))
                 else:
-                    data_list.append([x for x in line.strip().split("\t")])
+                    data_list.append(tuple(x for x in line.strip().split("\t")))
         return data_list
 
     ## Iterates over tasks / pipelines, respecting the ordering requirements of each.
@@ -32,10 +32,25 @@ class Mission:
     ## input variables. Passes outputs to next Task if needed.
     ## Kicks off logging and restart marking as well.
     def run(self):
+        data = parse_data_file(self.data_file)
+        if len(self.pipelines) > 0:
+            ##Run Pipelines
+            for i in data_list:
+                for p in self.pipelines:
+                    p.run(i)
+        elif len(self.tasks) > 0:
+            ##Run tasks
+            for i in data_list:
+                for t in self.tasks:
+                    t.run(i)
+
+        else:
+            raise Exception("Either tasks or pipelines must be specified.")
         return
 
 ## A pipeline is a collection of Tasks
 ## linked together by intermediate inputs/outputs
+## Each task is connected by its number of outputs and inputs.
 class Pipeline:
     def __init__(self, n):
         self.tasks = {}
@@ -45,6 +60,9 @@ class Pipeline:
 
     def add_task(self, task):
         self.tasks[task.name] = task
+
+    def set_input(self, task, inputs):
+        
 
     def run():
         return
@@ -73,14 +91,18 @@ class Task:
     def set_params(self, p):
         self.params = p
 
-    def set_inputs(self, i):
-        self.inputs = i
+    def run(self, input_tup):
 
-    def set_outputs(self, o):
-        self.outputs = o
 
-    def get_name(self):
-        return self.name
+    ## TODO Regex replaces $input<i> vars with the proper filename(s)
+    #def set_inputs(self, i):
+    #    self.inputs = i
+
+    #def set_outputs(self, o):
+    #    self.outputs = o
+
+    #def get_name(self):
+    #    return self.name
 
     def __repr__(self):
         return "Task: " + self.name + "\n" \
