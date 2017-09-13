@@ -37,7 +37,8 @@ class LaunChair:
 
         p = mp.Pool(size)
         try:
-            ret = p.map_async(func, self.work).get(9999)
+            ret = p.map_async(func, self.work).get(100000)
+            p.wait()
         except KeyboardInterrupt:
             p.terminate()
             exit(1)
