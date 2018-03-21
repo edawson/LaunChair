@@ -2,13 +2,14 @@ __author__ = 'Eric T Dawson'
 import subprocess
 import multiprocessing as mp
 import os
+import math
 
 
 def func(task):
     # subprocess.Popen(task, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
     try:
         subprocess.call(task, shell=True)
-    except KeyboardInterrupt, Exception:
+    except (KeyboardInterrupt, Exception):
         raise KeyboardInterrupt
     return
 
@@ -39,12 +40,12 @@ class LaunChair:
     def run(self, cores_per_task):
         if cores_per_task > self.n_cpus:
             raise ValueError("The number of cores per task must be less than the number of CPUs.")
-        size = self.n_cpus / cores_per_task
+        size = math.floor(self.n_cpus / cores_per_task)
 
         p = mp.Pool(size)
         try:
             ret = p.map_async(func, self.work).get(100000)
-        except KeyboardInterrupt:
+        except (KeyboardInterrupt):
             p.terminate()
             exit(1)
 

@@ -16,6 +16,6 @@ if __name__ == "__main__":
     args = parse_args()
     l = LaunChair()
     l.set_file(args.infile)
-    l.set_n_cpus(args.ncpus)
-    l.run(args.cores)
+    l.set_n_cpus(int(args.ncpus))
+    l.run(int(args.cores))
 
