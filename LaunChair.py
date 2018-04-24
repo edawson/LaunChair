@@ -40,7 +40,7 @@ class LaunChair:
     def run(self, cores_per_task):
         if cores_per_task > self.n_cpus:
             raise ValueError("The number of cores per task must be less than the number of CPUs.")
-        size = math.floor(self.n_cpus / cores_per_task)
+        size = int(math.floor(self.n_cpus / cores_per_task))
 
         p = mp.Pool(size)
         try:
