@@ -4,13 +4,6 @@ Eric T Dawson
 October 2014
 
 ## Background
-There is a lot of computational power out there that never gets utilized.
-Nearly every digital device today, be it a cell phone or supercomputer,
-has multiple cores.  But sometimes we single-threaded human beings do
-things that waste all this power at our fingertips. Worst of all, we
-waste our own time when we do inherently parallel tasks in serial.
-
-
 LaunChair makes it easy to run a list of independent serial or multithreaded
 tasks in parallel on your laptop or workstation. It can make things like
 parameter sweeps much faster with just one or two extra lines of code. It owes
@@ -22,32 +15,11 @@ LaunChair is developed and maintained on Linux but should work on Mac OS X
 out of the box. While nothing in LaunChair prevents it from working on Windows,
 it has not been tested on the platform.
 
-## Current Status  
-LaunChair is stable and compatible with Python 2.4-2.7. A new method, lcpro,
-is under active development on the dev branch. lcpro provides a pipeline-based
-wrapper for LaunChair that prevents users from having to write so many BASH loops
-and instead relies on a series of config files. These files are in a YAML-like format.
-In the future, lcpro will support full pipelining of Tasks, input/output handling, logging,
-restarting jobs, and more advanced parallel environment configuration. Stay tuned.
-
 ## What LaunChair is:
 1. A simple framework for running shell commands in parallel.
 2. A pure-Python module with no dependencies.
 3. A way to utilize all of the cores on a single machine.
-
-## What LaunChair isn't:
-1. A replacement for a real job scheduler like SLURM or SGE.
-2. An MPI-based parallel job launcher.
-3. Complicated; LaunChair is simple first and foremost.
-   There should be almost no learning curve, and that is
-   undoubtedly its best attribute.
-4. Omniscient: LaunChair doesn't know a lot about your
-   system or what you're doing with it. And for most tasks,
-   that's okay!
-5. Perfect. LaunChair is a work in progress and developed
-   mostly for personal use. If you have suggestions for how
-   to improve it please contact me!
-   
+  
 ## Using LaunChair
 LaunChair is designed to get you up and running quick so you
 can kick back and relax while your job runs. Let's do a quick example
@@ -79,21 +51,20 @@ like so:
 
         python launcher.py -i jobfile.txt -c 4
         
-This would launch each command with 4 cores. At this point you can kick back, relax,
-and let LaunChair do the work for you.
+This would launch each command with 4 cores. To specify the number of cores on a machine (rather than
+automatically using all of them), use the `-n` flag.  
+```
+        # Give each task four cores and specify that a machine has 8 total cores.
+        python launcher.py -i jobfile.txt -c 4 -n 8
+```
+
+**N.B.: Make sure to delete or rename your jobfile.txt (or other launcher file) between runs, so that 
+you don't concat them all together.**
  
 ## Common Questions and Answers
-Q: I used LaunChair and my job didn't get faster. Why?!
-A: Real computers don't have an infinite number of cores. LaunChair will very likely
-speed up serial tasks and those that don't scale well, but it isn't designed for all
-problems. For problems that are already multithreaded or when giving a number of cores
-per task equal to the number of cores on your system, you should reconsider using LaunChair.
-
 
 Q: There are fewer than 100 lines of code in this whole package...
 A: Yep! LaunChair is simple. It may grow in size in the future. Because
    it began as something for personal use it's really not meant as a sophisticated
    solution to every problem. I just got tired of doing parameter sweeps by hand.
-   
-Q: Will there be future improvements?
-A: I sure hope so!
+
